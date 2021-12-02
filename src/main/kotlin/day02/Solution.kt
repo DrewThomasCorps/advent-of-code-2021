@@ -12,43 +12,53 @@ fun main() {
 
 class Solution(private val input: List<String>) {
     enum class Direction {
-        Forward,
-        Down,
-        Up
+        forward,
+        down,
+        up
     }
 
     fun partOne(): Int {
+
         var depth = 0;
         var horizontal = 0;
-        input.forEach {
-            val (direction, value) = it.split(" ").let { (x, y) -> Pair(x, y.toInt()) }
-            when (direction) {
-                Direction.Forward.name.lowercase() -> {
-                    horizontal += value
+        iterateOverInput { direction: Direction, value: Int ->
+            run {
+                when (direction) {
+                    Direction.forward -> horizontal += value
+                    Direction.down -> depth += value
+                    Direction.up -> depth -= value
                 }
-                Direction.Down.name.lowercase() -> depth += value
-                Direction.Up.name.lowercase() -> depth -= value
+            }
+        }
+
+        return depth * horizontal
+    }
+
+    fun partTwo(): Int {
+        var depth = 0;
+        var horizontal = 0;
+        var aim = 0
+        iterateOverInput { direction: Direction, value: Int ->
+            run {
+                when (direction) {
+                    Direction.forward -> {
+                        horizontal += value
+                        depth += aim * value
+                    }
+                    Direction.down -> aim += value
+                    Direction.up -> aim -= value
+                }
             }
         }
         return depth * horizontal
     }
 
-
-        fun partTwo(): Int {
-            var depth = 0;
-            var horizontal = 0;
-            var aim = 0
-            input.forEach {
-                val (direction, value) = it.split(" ").let { (x, y) -> Pair(x, y.toInt()) }
-                when (direction) {
-                    Direction.Forward.name.lowercase() -> {
-                        horizontal += value
-                        depth += aim * value
-                    }
-                    Direction.Down.name.lowercase() -> aim += value
-                    Direction.Up.name.lowercase() -> aim -= value
-                }
-            }
-            return depth * horizontal
+    private fun iterateOverInput(function: (Direction, Int) -> Unit) {
+        input.forEach {
+            val (direction, value) = it.split(" ").let { (x, y) -> Pair(Direction.valueOf(x), y.toInt()) }
+            function.invoke(direction, value)
         }
     }
+}
+
+
