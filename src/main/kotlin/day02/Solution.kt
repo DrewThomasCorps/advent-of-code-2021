@@ -11,16 +11,23 @@ fun main() {
 }
 
 class Solution(private val input: List<String>) {
+    enum class Direction {
+        Forward,
+        Down,
+        Up
+    }
+
     fun partOne(): Int {
         var depth = 0;
         var horizontal = 0;
         input.forEach {
-            if (it.startsWith("forward")) {
-                horizontal += it.substringAfter(" ").toInt()
-            } else if (it.startsWith("down")) {
-                depth += it.substringAfter(" ").toInt()
-            } else if (it.startsWith("up")) {
-                depth -= it.substringAfter(" ").toInt()
+            val (direction, value) = it.split(" ").let { (x, y) -> Pair(x, y.toInt()) }
+            when (direction) {
+                Direction.Forward.name.lowercase() -> {
+                    horizontal += value
+                }
+                Direction.Down.name.lowercase() -> depth += value
+                Direction.Up.name.lowercase() -> depth -= value
             }
         }
         return depth * horizontal
@@ -32,14 +39,14 @@ class Solution(private val input: List<String>) {
             var horizontal = 0;
             var aim = 0
             input.forEach {
-                val value = it.substringAfter(" ").toInt()
-                if (it.startsWith("forward")) {
-                    horizontal += value
-                    depth += aim * value
-                } else if (it.startsWith("down")) {
-                    aim += value
-                } else if (it.startsWith("up")) {
-                    aim -= value
+                val (direction, value) = it.split(" ").let { (x, y) -> Pair(x, y.toInt()) }
+                when (direction) {
+                    Direction.Forward.name.lowercase() -> {
+                        horizontal += value
+                        depth += aim * value
+                    }
+                    Direction.Down.name.lowercase() -> aim += value
+                    Direction.Up.name.lowercase() -> aim -= value
                 }
             }
             return depth * horizontal
